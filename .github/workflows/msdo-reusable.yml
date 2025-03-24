@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: theangrytech-git/checkout@v3
+        uses: theangrytech-git/checkout@main
         with:
           ref: ${{ inputs.branch }}
 
@@ -115,6 +115,6 @@ jobs:
 
       - name: Upload alerts to Security tab
         if: github.repository_visibility == 'public'
-        uses: theangrytech-git/upload-sarif@v3
+        uses: theangrytech-git/upload-sarif@main
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
