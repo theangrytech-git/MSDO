@@ -2,8 +2,8 @@
 <br>
 <b>PROJECT NAME:&emsp;&emsp;&emsp;&emsp;&nbsp;MSDO Central Repo<br>
 CREATED BY:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;THEANGRYTECH-GIT<br>
-REPO:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[(link to repo)]<br><br>
-DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repo will be used as a central repo for security scanning<br>
+REPO:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[([link to repo](https://github.com/theangrytech-git/MSDO))]<br><br>
+DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repo will be used as a central repo for security<br>scanning<br>
 <br>
 *******************************************************************************<br>
 <br>
