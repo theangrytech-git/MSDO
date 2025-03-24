@@ -1,4 +1,4 @@
-name: Run MSDO + Secret Scan
+name: msdo-main-pipeline
 
 on:
   push:
