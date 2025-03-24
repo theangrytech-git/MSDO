@@ -99,7 +99,7 @@ jobs:
           echo "TOOLS=$TOOLS" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Run Microsoft Security DevOps
-        uses: microsoft/security-devops-action@latest
+        uses: theangrytech-git/security-devops-action@main
         id: msdo
         with:
           tools: ${{ env.TOOLS }}
