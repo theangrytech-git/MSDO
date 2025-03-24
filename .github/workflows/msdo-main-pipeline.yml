@@ -1,0 +1,18 @@
+name: Run MSDO + Secret Scan
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  core-msdo-scan:
+    uses: ./.github/workflows/msdo-reusable.yml
+    with:
+      branch: main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  secret-scan:
+    uses: ./.github/workflows/msdo-secret-scan.yml
+    needs: core-msdo-scan
