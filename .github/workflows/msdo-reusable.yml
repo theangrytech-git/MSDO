@@ -112,10 +112,12 @@ jobs:
             echo "For private repositories, consider enabling GHAS or using external security tools like SonarQube or Snyk."
             exit 0
           fi
+      - name: Install GitHub CLI
+        if: github.repository_visibility == 'public'
+        run: sudo apt-get install -y gh
 
       - name: Upload alerts to Security tab
         if: github.repository_visibility == 'public'
-        uses: theangrytech-git/codeql-action/sarif@main
-
+        uses: ./.github/actions/upload-sarif
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
