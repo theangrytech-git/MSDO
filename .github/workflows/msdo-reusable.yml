@@ -24,10 +24,10 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout repository
-        uses: theangrytech-git/checkout@main
-        with:
-          ref: ${{ inputs.branch }}
+      - name: Manually checkout repository (internal-safe)
+        run: |
+          git clone https://github.com/${{ github.repository }} .
+          git checkout ${{ inputs.branch }}
 
       - name: Set environment variables for tools
         shell: pwsh
