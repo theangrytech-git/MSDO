@@ -65,29 +65,21 @@ jobs:
           if ((Get-ChildItem -Recurse -Include *.json | Select-String 'resources' | Measure-Object).Count -gt 0) {
             $TOOLS += "templateanalyzer,"
             echo "Template Analyzer enabled - ARM templates detected."
-          } else {
-            echo "Template Analyzer skipped - No ARM templates found."
           }
 
           if ((Get-ChildItem -Recurse -Include *.bicep | Measure-Object).Count -gt 0) {
             $TOOLS += "templateanalyzer,"
             echo "Template Analyzer enabled - Bicep files detected."
-          } else {
-            echo "Template Analyzer skipped - No Bicep files found."
           }
 
           if ((Get-ChildItem -Recurse -Include *.tf, *.json, *.yml, *.yaml | Measure-Object).Count -gt 0) {
             $TOOLS += "terrascan,"
             echo "Terrascan enabled - Terraform/JSON/YML/YAML files detected."
-          } else {
-            echo "Terrascan skipped - No Terraform/JSON/YML/YAML files found."
           }
 
           if ((Get-ChildItem -Recurse -Include Dockerfile | Measure-Object).Count -gt 0) {
             $TOOLS += "trivy,"
             echo "Trivy enabled - Dockerfiles detected."
-          } else {
-            echo "Trivy skipped - No Dockerfiles found."
           }
 
           $TOOLS = $TOOLS.TrimEnd(',')
@@ -110,39 +102,29 @@ jobs:
         run: |
           if [ "${{ github.repository_visibility }}" == "private" ]; then
             echo "This is a private repository. Code Scanning is not available unless GitHub Advanced Security (GHAS) is enabled."
-            echo "For private repositories, consider enabling GHAS or using external security tools like SonarQube or Snyk."
             exit 0
           fi
-      - name: Install GitHub CLI
-        if: github.repository_visibility == 'public'
-        run: sudo apt-get install -y gh
 
-      - name: Checkout MSDO repo (for local actions)
-        uses: actions/checkout@v3
-        with:
-          repository: theangrytech-git/MSDO
-          path: msdo-central
-       
       - name: Upload SARIF to GitHub Code Scanning
         if: github.repository_visibility == 'public'
         run: |
           echo "Compressing and uploading SARIF..."
           sarif_file="${{ steps.msdo.outputs.sarifFile }}"
           if [ ! -f "$sarif_file" ]; then
-          echo "SARIF file not found at $sarif_file"
-          exit 0
+            echo "SARIF file not found at $sarif_file"
+            exit 0
           fi
 
           gzip -c "$sarif_file" | base64 -w 0 > msdo.sarif.base64
           encoded_sarif=$(cat msdo.sarif.base64)
 
           curl -s -X POST \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github+json" \
-          -H "Content-Type: application/json" \
-          https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
-          -d @- <<EOF
-          {
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
+            -d @- <<EOF
+            {
           "commit_sha": "${{ github.sha }}",
           "ref": "${{ github.ref }}",
           "sarif": "$encoded_sarif",
