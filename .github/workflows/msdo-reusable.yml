@@ -117,9 +117,15 @@ jobs:
         if: github.repository_visibility == 'public'
         run: sudo apt-get install -y gh
 
-      - name: Upload alerts to Security tab
+      - name: Checkout MSDO repo (for local actions)
+        uses: actions/checkout@v3
+        with:
+          repository: theangrytech-git/MSDO
+          path: msdo-central
+       
+      - name: Upload alerts to GitHub code scanning
         if: github.repository_visibility == 'public'
-        uses: ./.github/actions/upload-sarif
+        uses: ./msdo-central/.github/actions/upload-sarif
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
         env:
