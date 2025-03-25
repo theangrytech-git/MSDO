@@ -121,3 +121,5 @@ jobs:
         uses: ./.github/actions/upload-sarif
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
