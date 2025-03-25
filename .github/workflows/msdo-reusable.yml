@@ -14,7 +14,7 @@ on:
 jobs:
   msdo:
     name: Microsoft Security DevOps
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
