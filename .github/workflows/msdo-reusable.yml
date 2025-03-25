@@ -115,7 +115,7 @@ jobs:
 
       - name: Upload alerts to Security tab
         if: github.repository_visibility == 'public'
-        uses: theangrytech-git/codeql-action/sarif@v3.0.0
+        uses: theangrytech-git/codeql-action/sarif@main
 
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
