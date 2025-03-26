@@ -22,19 +22,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install TruffleHog
+      - name: Install TruffleHog and SARIF tools
         run: |
-          pip install trufflehog
+          pip install trufflehog sarif-tools
 
       - name: Run TruffleHog and generate JSON report
         run: |
           trufflehog filesystem --directory . --json > trufflehog-findings.json || true
 
       - name: Convert TruffleHog findings to SARIF format
-        if: github.repository_visibility == 'public' && success()
+        if: github.repository_visibility == 'public'
         run: |
-          pip install sarif-tools
-          cat <<EOF > convert_to_sarif.py
+          cat << 'EOF' > convert_to_sarif.py
 import json
 
 with open('trufflehog-findings.json') as f:
@@ -83,19 +82,22 @@ EOF
           python3 convert_to_sarif.py
 
       - name: Upload TruffleHog SARIF to GitHub Code Scanning
-        if: github.repository_visibility == 'public' && success()
+        if: github.repository_visibility == 'public'
         run: |
           gzip -c trufflehog.sarif | base64 -w 0 > trufflehog.sarif.base64
           encoded_sarif=$(cat trufflehog.sarif.base64)
 
-          echo '{
-            "commit_sha": "'"${{ github.sha }}"'",
-            "ref": "'"${{ github.ref }}"'",
-            "sarif": "'$encoded_sarif'",
-            "checkout_uri": "https://github.com/${{ github.repository }}",
-            "tool_name": "TruffleHog"
-          }' | curl -s -X POST \
+          curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
-            https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs
+            https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
+            -d @- <<EOF
+{
+  "commit_sha": "${{ github.sha }}",
+  "ref": "${{ github.ref }}",
+  "sarif": "$encoded_sarif",
+  "checkout_uri": "https://github.com/${{ github.repository }}",
+  "tool_name": "TruffleHog"
+}
+EOF
