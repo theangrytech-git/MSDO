@@ -24,62 +24,63 @@ jobs:
 
       - name: Install TruffleHog and SARIF tools
         run: |
-          pip install trufflehog sarif-tools
+          pip install trufflehog
 
       - name: Run TruffleHog and generate JSON report
         run: |
           trufflehog filesystem --directory . --json > trufflehog-findings.json || true
 
       - name: Convert TruffleHog findings to SARIF format
-        if: github.repository_visibility == 'public'
         run: |
-          cat << 'EOF' > convert_to_sarif.py
-import json
-
-with open('trufflehog-findings.json') as f:
-  findings = json.load(f)
-
-sarif = {
-  'version': '2.1.0',
-  'runs': [{
-    'tool': {
-      'driver': {
-        'name': 'TruffleHog',
-        'informationUri': 'https://github.com/trufflesecurity/trufflehog',
-        'rules': []
-      }
-    },
-    'results': []
-  }]
-}
-
-seen_rules = set()
-
-for finding in findings:
-  reason = finding.get('reason', 'Secret detected')
-  rule_id = f"trufflehog-{reason.replace(' ', '-')[:64]}"
-  if rule_id not in seen_rules:
-    sarif['runs'][0]['tool']['driver']['rules'].append({
-      'id': rule_id,
-      'name': reason
-    })
-    seen_rules.add(rule_id)
-  sarif['runs'][0]['results'].append({
-    'ruleId': rule_id,
-    'level': 'warning',
-    'message': {'text': reason},
-    'locations': [{
-      'physicalLocation': {
-        'artifactLocation': {'uri': finding.get('path', '')},
-        'region': {'startLine': 1}
-      }
-    }]
-  })
-
-with open('trufflehog.sarif', 'w') as out:
-  json.dump(sarif, out)
-EOF
+          echo "${{ steps.convert_script.outputs.script }}" > convert_to_sarif.py
           python3 convert_to_sarif.py
+
+        env:
+          script: |
+            import json
+
+            with open('trufflehog-findings.json') as f:
+              findings = json.load(f)
+
+            sarif = {
+              'version': '2.1.0',
+              'runs': [{
+                'tool': {
+                  'driver': {
+                    'name': 'TruffleHog',
+                    'informationUri': 'https://github.com/trufflesecurity/trufflehog',
+                    'rules': []
+                  }
+                },
+                'results': []
+              }]
+            }
+
+            seen_rules = set()
+
+            for finding in findings:
+              reason = finding.get('reason', 'Secret detected')
+              rule_id = f"trufflehog-{reason.replace(' ', '-')[:64]}"
+              if rule_id not in seen_rules:
+                sarif['runs'][0]['tool']['driver']['rules'].append({
+                  'id': rule_id,
+                  'name': reason
+                })
+                seen_rules.add(rule_id)
+              sarif['runs'][0]['results'].append({
+                'ruleId': rule_id,
+                'level': 'warning',
+                'message': {'text': reason},
+                'locations': [{
+                  'physicalLocation': {
+                    'artifactLocation': {'uri': finding.get('path', '')},
+                    'region': {'startLine': 1}
+                  }
+                }]
+              })
+
+            with open('trufflehog.sarif', 'w') as out:
+              json.dump(sarif, out)
 
       - name: Upload TruffleHog SARIF to GitHub Code Scanning
         if: github.repository_visibility == 'public'
@@ -87,17 +88,17 @@ EOF
           gzip -c trufflehog.sarif | base64 -w 0 > trufflehog.sarif.base64
           encoded_sarif=$(cat trufflehog.sarif.base64)
 
-          cat <<EOF | curl -s -X POST \
+          curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
             https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
-            -d @-
-{
-  "commit_sha": "${{ github.sha }}",
-  "ref": "${{ github.ref }}",
-  "sarif": "$encoded_sarif",
-  "checkout_uri": "https://github.com/${{ github.repository }}",
-  "tool_name": "TruffleHog"
-}
-EOF
+            -d @- <<EOF
+          {
+            "commit_sha": "${{ github.sha }}",
+            "ref": "${{ github.ref }}",
+            "sarif": "$encoded_sarif",
+            "checkout_uri": "https://github.com/${{ github.repository }}",
+            "tool_name": "TruffleHog"
+          }
+          EOF
