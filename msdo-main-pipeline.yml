@@ -1,0 +1,28 @@
+name: msdo-main-pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  msdo-core-scan:
+    uses: ./.github/workflows/msdo-reusable.yml
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+      security-events: write
+    with:
+      branch: main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  secret-scan:
+    uses: ./.github/workflows/secret-scanning.yml
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+      security-events: write
+    needs: msdo-core-scan
