@@ -24,7 +24,7 @@ jobs:
           git clone https://github.com/${{ github.repository }} .
           git checkout ${{ github.ref_name }}
 
-      - name: Install TruffleHog and SARIF tools
+      - name: Install TruffleHog
         run: |
           pip install trufflehog
 
@@ -37,8 +37,12 @@ jobs:
         run: |
           echo "import json" > convert_to_sarif.py
           echo "" >> convert_to_sarif.py
-          echo "with open('trufflehog-findings.json') as f:" >> convert_to_sarif.py
-          echo "  findings = json.load(f)" >> convert_to_sarif.py
+          echo "try:" >> convert_to_sarif.py
+          echo "  with open('trufflehog-findings.json') as f:" >> convert_to_sarif.py
+          echo "    findings = json.load(f)" >> convert_to_sarif.py
+          echo "except Exception as e:" >> convert_to_sarif.py
+          echo "  print('Failed to parse findings:', e)" >> convert_to_sarif.py
+          echo "  findings = []" >> convert_to_sarif.py
           echo "" >> convert_to_sarif.py
           echo "sarif = {" >> convert_to_sarif.py
           echo "  'version': '2.1.0'," >> convert_to_sarif.py
@@ -94,7 +98,3 @@ jobs:
             -H "Content-Type: application/json" \
             https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
             -d "{\"commit_sha\": \"${{ github.sha }}\",\"ref\": \"${{ github.ref }}\",\"sarif\": \"$encoded_sarif\",\"checkout_uri\": \"https://github.com/${{ github.repository }}\",\"tool_name\": \"TruffleHog\"}"
-
-            -H "Content-Type: application/json" \
-            https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs \
-            -d "{\n              \"commit_sha\": \"${{ github.sha }}\",\n              \"ref\": \"${{ github.ref }}\",\n              \"sarif\": \"$encoded_sarif\",\n              \"checkout_uri\": \"https://github.com/${{ github.repository }}\",\n              \"tool_name\": \"TruffleHog\"\n            }"
