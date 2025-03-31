@@ -35,8 +35,10 @@ DevOps scanning tools (MSDO) in your own environment.</b><br>
     Create a new repository in your org called <code>MSDO-Security</code> (or a name of your choosing),<br>and copy these files from this repository:
     <ul>
       <li><code>.github/workflows/msdo-main-pipeline.yml</code></li>
-      <li><code>.github/workflows/msdo-reusable.yml</code></li>
-      <li><code>.github/workflows/secret-scanning.yml</code></li>
+      <li><code>.github/workflows/msdo-dynamic-scanning.yml</code></li>
+      <li><code>.github/workflows/msdo-credscan.yml</code></li>
+      <li><code>.github/workflows/msdo-gitleaks.yml</code></li>
+      <li><code>.github/workflows/msdo-trufflehog.yml</code></li>
       <li><code>.github/actions/upload-sarif/ ← composite action for native SARIF upload</code></li>
       <li><code>gitleaks.toml ← centralized scanning config </code></li>
     </ul>
@@ -62,8 +64,8 @@ DevOps scanning tools (MSDO) in your own environment.</b><br>
 <table border="1" cellpadding="5">
   <tr><th>Workflow Name</th><th>Purpose</th></tr>
   <tr><td><code>msdo-main-pipeline.yml</code></td><td>Orchestrates all security scans + uploads</td></tr>
-  <tr><td><code>msdo-reusable.yml</code></td><td>Performs MSDO scans on infra/code/containers</td></tr>
-  <tr><td><code>msdo-secret-scanning.yml</code></td><td>Runs <code>credscan</code> for secret detection</td></tr>
+  <tr><td><code>msdo-dynamic-scanning.yml</code></td><td>Performs MSDO scans on infra/code/containers</td></tr>
+  <tr><td><code>msdo-credscan.yml</code></td><td>Runs <code>credscan</code> with <code>.gdnsettings</code> config for secret detection</td></tr>
   <tr><td><code>msdo-trufflehog.yml</code></td><td>Runs <code>Trufflehog</code> to detect passwords and secrets using entropy and regex-based rules</td></tr>
   <tr><td><code>msdo-gitleaks.yml</code></td><td>Git-aware secret scanning using Gitleaks</td></tr>
   <tr><td><code>upload-sarif action</code></td><td>Composite action to upload SARIF locally</td></tr>
