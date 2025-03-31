@@ -36,9 +36,10 @@ jobs:
           chmod +x gitleaks
           ./gitleaks version
 
-          echo "🔍 Running Gitleaks scan..."
+          echo " Running Gitleaks scan..."
           ./gitleaks detect \
           --source=. \
+          --config=.gitleaks.toml \
           --report-format sarif \
           --report-path=gitleaks.sarif \
           --exit-code 0
