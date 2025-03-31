@@ -37,7 +37,7 @@ jobs:
     needs: secret-scan-credscan
 
   secret-scan-gitleaks:
-    uses: ./.github/workflows/msdo-trufflehog.yml
+    uses: ./.github/workflows/msdo-gitleaks.yml
     permissions:
       contents: read
       id-token: write
