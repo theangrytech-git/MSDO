@@ -1,4 +1,4 @@
-name: msdo-gitleaks-secret-scanning
+name: msdo-secret-scanning-gitleaks
 
 on:
   workflow_call:
