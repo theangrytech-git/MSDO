@@ -3,7 +3,8 @@
 <b>PROJECT NAME:&emsp;&emsp;&emsp;&emsp;&nbsp;MSDO Central Repo<br>
 CREATED BY:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;THEANGRYTECH-GIT<br>
 REPO:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[([MSDO Repo](https://github.com/theangrytech-git/MSDO))]<br><br>
-DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repository centrally <br>manages reusable GitHub Action workflows for secure DevOps pipelines <br>using Microsoft Security DevOps (MSDO), Gitleaks, and SARIF reporting.
+DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repository centrally <br>manages reusable GitHub Action workflows for secure DevOps pipelines <br>using Microsoft Security DevOps (MSDO), Gitleaks, Trufflehog,<br>
+Credscan, and SARIF reporting.
 
 It is designed for organizations with restricted environments and **does not <br>rely on any external GitHub Actions**.<br>
 <br>
