@@ -1,4 +1,5 @@
-name: trufflehog-secret-scanning
+# Added seperately in case there is a need to run it seperately
+name: msdo-secret-scanning-trufflehog
 
 on:
   workflow_call:
