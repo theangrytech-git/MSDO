@@ -1,9 +1,15 @@
 name: msdo-main-pipeline
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: 'main'
+    secrets:
+      GH_TOKEN:
+        required: false
 
 jobs:
   msdo-dynamic-scanning:
@@ -14,7 +20,7 @@ jobs:
       actions: read
       security-events: write
     with:
-      branch: main
+      branch: ${{ inputs.branch }}
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -26,6 +32,8 @@ jobs:
       actions: read
       security-events: write
     needs: msdo-dynamic-scanning
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   secret-scan-trufflehog:
     uses: ./.github/workflows/msdo-trufflehog.yml
@@ -35,6 +43,8 @@ jobs:
       actions: read
       security-events: write
     needs: secret-scan-credscan
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   secret-scan-gitleaks:
     uses: ./.github/workflows/msdo-gitleaks.yml
@@ -44,3 +54,5 @@ jobs:
       actions: read
       security-events: write
     needs: secret-scan-trufflehog
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
