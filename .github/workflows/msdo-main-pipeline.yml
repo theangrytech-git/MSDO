@@ -18,11 +18,29 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  secret-scan:
-    uses: ./.github/workflows/secret-scanning.yml
+  secret-scan-credscan:
+    uses: ./.github/workflows/msdo-secret-scanning.yml
     permissions:
       contents: read
       id-token: write
       actions: read
       security-events: write
     needs: msdo-core-scan
+
+  secret-scan-trufflehog:
+    uses: ./.github/workflows/msdo-trufflehog.yml
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+      security-events: write
+    needs: secret-scan-credscan
+
+  secret-scan-gitleaks:
+    uses: ./.github/workflows/msdo-trufflehog.yml
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+      security-events: write
+    needs: secret-scan-trufflehog
