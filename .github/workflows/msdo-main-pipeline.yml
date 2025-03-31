@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  msdo-core-scan:
-    uses: ./.github/workflows/msdo-reusable.yml
+  msdo-dynamic-scanning:
+    uses: ./.github/workflows/msdo-dynamic-scanning.yml
     permissions:
       contents: read
       id-token: write
@@ -19,13 +19,13 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   secret-scan-credscan:
-    uses: ./.github/workflows/msdo-secret-scanning.yml
+    uses: ./.github/workflows/msdo-credscan.yml
     permissions:
       contents: read
       id-token: write
       actions: read
       security-events: write
-    needs: msdo-core-scan
+    needs: msdo-dynamic-scanning
 
   secret-scan-trufflehog:
     uses: ./.github/workflows/msdo-trufflehog.yml
