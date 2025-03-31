@@ -3,10 +3,23 @@
 <b>PROJECT NAME:&emsp;&emsp;&emsp;&emsp;&nbsp;MSDO Central Repo<br>
 CREATED BY:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;THEANGRYTECH-GIT<br>
 REPO:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;[([MSDO Repo](https://github.com/theangrytech-git/MSDO))]<br><br>
-DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repo is used to centrally manage and deploy<br>GitHub Action-based Microsoft Security DevOps (MSDO) scanning pipelines,<br> including secret scanning and SARIF reporting.<br>
+DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repository centrally <br>manages reusable GitHub Action workflows for secure DevOps pipelines <br>using Microsoft Security DevOps (MSDO), Gitleaks, and SARIF reporting.
+
+It is designed for organizations with restricted environments and **does not <br>rely on any external GitHub Actions**.<br>
 <br>
 *******************************************************************************<br>
 <br>
+<b>FEATURES</b><br>
+<br>
+- 🔍 Microsoft Security DevOps (MSDO) scanning  <br>
+- Tools like `ESLint`, `Bandit`, `Binskim`, `Checkov`, `Credscan`, `Templateanalyzer`, `Terrascan`, `Trivvy`, etc<br>
+- 🔐 Secret scanning<br>
+  - `Credscan` for code-level secrets<br>
+  - `Trufflehog` for detecting API keys, passwords, and other sensitive data in source code using entropy and regex-based rules<br>
+  - `Gitleaks` for Git history, tokens, config, and sensitive patterns<br>
+- 📦 Custom SARIF uploader (no marketplace action)<br>
+- 🌐 Defender for Cloud integration supported<br>
+- 🚫 No external marketplace dependencies — fully self-contained<br>
 <br>
 
 *******************************************************************************
@@ -15,30 +28,17 @@ DESCRIPTION:</b>&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;This repo is used to central
 <b>Use this section to clone or fork this repo and configure GitHub Security <br>
 DevOps scanning tools (MSDO) in your own environment.</b><br>
 <br>
--Built with no external GitHub Actions — works in restricted org environments <br>
--Includes secret scanning, SARIF upload, and Defender for Cloud integration<br>
-<br>
----<br>
-<br>
-<b>WHAT'S INCLUDED:</b><br>
-- Microsoft Security DevOps scanning (`credscan`, `binskim`, `checkov`, etc.)<br>
-- Secret scanning using `credscan`<br>
-- Self-hosted SARIF uploader (composite GitHub Action)<br>
-- Manual .NET 6 install (no external dependencies)<br>
-- Fully functional SARIF upload to GitHub Code Scanning<br>
-<br>
----<br>
-<br>
 <b>HOW TO SET UP:</b><br>
 <br>
 <ol>
   <li><strong>Create a Central MSDO Security Repo:</strong><br>
-    Create a new repository in your org called <code>MSDO-Security</code> (or a name of your choosing), and copy these files from this repository:
+    Create a new repository in your org called <code>MSDO-Security</code> (or a name of your choosing),<br>and copy these files from this repository:
     <ul>
       <li><code>.github/workflows/msdo-main-pipeline.yml</code></li>
       <li><code>.github/workflows/msdo-reusable.yml</code></li>
       <li><code>.github/workflows/secret-scanning.yml</code></li>
-      <li><code>.github/actions/upload-sarif/</code> (folder)</li>
+      <li><code>.github/actions/upload-sarif/ ← composite action for native SARIF upload</code></li>
+      <li><code>gitleaks.toml ← centralized scanning config </code></li>
     </ul>
   </li><br>
   <li><strong>Add a GH_TOKEN secret (if needed):</strong><br>
@@ -64,7 +64,10 @@ DevOps scanning tools (MSDO) in your own environment.</b><br>
   <tr><td><code>msdo-main-pipeline.yml</code></td><td>Orchestrates all security scans + uploads</td></tr>
   <tr><td><code>msdo-reusable.yml</code></td><td>Performs MSDO scans on infra/code/containers</td></tr>
   <tr><td><code>msdo-secret-scanning.yml</code></td><td>Runs <code>credscan</code> for secret detection</td></tr>
-  <tr><td><code>.github/actions/upload-sarif/</code></td><td>Composite action to upload SARIF locally</td></tr>
+  <tr><td><code>msdo-trufflehog.yml</code></td><td>Runs <code>Trufflehog</code> to detect passwords and secrets using entropy and regex-based rules</td></tr>
+  <tr><td><code>msdo-gitleaks.yml</code></td><td>Git-aware secret scanning using Gitleaks</td></tr>
+  <tr><td><code>upload-sarif action</code></td><td>Composite action to upload SARIF locally</td></tr>
+  <tr><td><code>gitleaks.toml</code></td><td>Custom rule config for Gitleaks</td></tr>
   <tr><td><code>msdo-repo-pipeline.yml</code></td><td>To be added into each Repo you want to scan as a Workflow Action</td></tr>
 </table>
 ---<br>
@@ -81,6 +84,8 @@ DevOps scanning tools (MSDO) in your own environment.</b><br>
 - Runner: <code>ubuntu-latest</code><br>
 - .NET 6 SDK is installed via script in workflow<br>
 - <code>gh</code> CLI is available by default on GitHub-hosted runners<br>
+- Gitleaks downloaded and run as part of pipeline<br>
+- No GitHub Marketplace dependencies required
 <br>
 ---<br>
 <br>
@@ -122,4 +127,16 @@ Daily: £0.00<br>
 Weekly: £0.00<br>
 Monthly: £0.00<br>
 Yearly: £0.00<br>
-
+<br>
+*******************************************************************************<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Roadmap (Planned)<br>
+*******************************************************************************<br>
+<br>
+Add Slack/MS Teams alerting<br>
+<br>
+Upload SARIF as downloadable artifacts<br>
+<br>
+Add cloud cost scanning support<br>
+<br>
+Add GitHub Enterprise integration templates<br>
+<br>
