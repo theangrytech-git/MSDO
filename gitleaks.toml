@@ -1,12 +1,12 @@
-title = "Gitleaks config for theangrytech repos"
-description = "Targets JS, Terraform, Python, Cloud configs, secrets, and Git metadata"
+title = "Gitleaks config for MSDO repos"
+description = "Targets JS, Terraform, Python, Cloud configs, AWS and Azure secrets, and Git metadata"
 version = "2"
 redact = false  # Show actual secrets in alerts
 
 [config]
 logLevel = "INFO"
 
-#Scan these specific file types
+# Scan these specific file types
 [[config.pathAllowlist]]
 description = "Only scan selected file extensions"
 regexes = [
@@ -27,7 +27,7 @@ regexes = [
 ]
 
 ##########################
-#Common Secret Rules #
+# Common Secret Rules
 ##########################
 
 [[rules]]
@@ -91,7 +91,7 @@ regex = '''https://hooks.slack.com/services/T[A-Z0-9]{8}/B[A-Z0-9]{8}/[a-zA-Z0-9
 tags = ["slack", "webhook"]
 
 ##########################
-# Git Metadata Rules  #
+# Git Metadata Rules
 ##########################
 
 [[rules]]
@@ -121,6 +121,6 @@ files = [
   ".github/",
   "README.md"
 ]
-
-[allowlist.regexes]
-"dummy-api-key" = "dummy_[a-zA-Z0-9]{10,}"
+regexes = [
+  "dummy_[a-zA-Z0-9]{10,}"
+]
