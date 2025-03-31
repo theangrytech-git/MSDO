@@ -1,3 +1,4 @@
+# Added seperately in case there is a need to run it seperately
 name: msdo-gitleaks-secret-scanning
 
 on:
