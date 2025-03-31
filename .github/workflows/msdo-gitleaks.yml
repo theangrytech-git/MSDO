@@ -28,6 +28,12 @@ jobs:
           git clone https://github.com/${{ github.repository }} .
           git checkout ${{ github.ref_name }}
 
+      - name: Fetch Gitleaks config from MSDO
+      #This section will need to be edited to match wherever the repo will be copied to
+        run: |
+          echo "🔧 Fetching .gitleaks.toml from MSDO repo..."
+          curl -sSL https://raw.githubusercontent.com/theangrytech-git/MSDO/main/gitleaks.toml -o .gitleaks.toml
+
       - name: Run Gitleaks
         run: |
           echo "Downloading Gitleaks..."
